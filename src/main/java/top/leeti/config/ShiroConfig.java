@@ -70,8 +70,8 @@ public class ShiroConfig {
          */
         //设置访问各 url 的权限
         Map<String, String> filterChain = new HashMap<>(5);
-        filterChain.put("/app/login/**", "authc");
-        filterChain.put("/app/noLogin/**", "anon");
+        filterChain.put("/miniprogram/login/**", "authc");
+        filterChain.put("/miniprogram/noLogin/**", "anon");
 
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChain);
 

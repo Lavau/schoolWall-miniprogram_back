@@ -37,29 +37,5 @@ public class MyDataController {
         result.setData(page);
         return JSON.toJSONString(result);
     }
-//
-//    @Getter
-//    public static enum Type {
-//        /**
-//         * typeId:1
-//         */
-//        PUBLISHED_DATA(1, ""),
-//        /**
-//         * typeId:2
-//         */
-//        LIKED_DATA(2, ""),
-//        /**
-//         * typeId:3
-//         */
-//        COMMENTED_DATA(3, "");
-//
-//        private Integer typeId;
-//        private String type;
-//
-//        Type(int typeId, String type) {
-//            this.typeId = typeId;
-//            this.type = type;
-//        }
-//    }
 }
 

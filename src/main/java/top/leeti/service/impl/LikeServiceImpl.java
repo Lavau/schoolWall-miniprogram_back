@@ -28,7 +28,7 @@ public class LikeServiceImpl implements LikeService {
         PublishedInfo publishedInfo = publishedInfoMapper.getPublishedInfoById(id);
 
         if (publishedInfo == null) {
-            throw new RecordOfDataBaseNoFoundException("无法点赞，被点赞的发布信息被删除或正在接受审核");
+            throw new RecordOfDataBaseNoFoundException("无法点赞，被点赞的发布信息被删除或正在接受审核", id, "LikeServiceImpl.like()");
         }
 
         if (isLike) {

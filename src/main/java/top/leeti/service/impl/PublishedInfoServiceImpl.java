@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import top.leeti.dao.CommentMapper;
+import top.leeti.dao.FavoriteMapper;
 import top.leeti.dao.LikeMapper;
 import top.leeti.dao.PublishedInfoMapper;
 import top.leeti.entity.Comment;
@@ -37,6 +38,9 @@ public class PublishedInfoServiceImpl implements PublishedInfoService {
 
     @Resource
     private CommentMapper commentMapper;
+
+    @Resource
+    private FavoriteMapper favoriteMapper;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -85,8 +89,12 @@ public class PublishedInfoServiceImpl implements PublishedInfoService {
     @Transactional(rollbackFor = Exception.class)
     public void deletePublishedInfo(String id) {
         likeMapper.deleteLikeById(id);
+
         List<Comment> comments = commentMapper.listCommentsOfPublishedInfo(id);
         comments.forEach(comment -> commentMapper.deleteCommentByParentId(comment.getId()));
+
+        favoriteMapper.deleteFavoritedContentByPublishedInfoId(id);
+
         publishedInfoMapper.deletePublishedInfo(id);
     }
 }

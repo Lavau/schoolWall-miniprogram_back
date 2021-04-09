@@ -47,5 +47,5 @@ public class PublishedInfo implements Serializable {
     private String avatarUrl;
     private String nickname;
     private Boolean Like;
-
+    private String favoritedContentId;
 }

@@ -34,7 +34,7 @@ public class CommentController {
     public String addCommentOfMixedData(@RequestParam String commentContent, @RequestParam String attachedId) {
         PublishedInfo publishedInfo = publishedInfoService.getPublishedInfoById(attachedId);
         if (publishedInfo == null) {
-            throw new RecordOfDataBaseNoFoundException("被评论的发布信息已被删除或者正在被审核");
+            throw new RecordOfDataBaseNoFoundException("被评论的发布信息已被删除或者正在被审核", attachedId, "/miniprogram/login/comment/insert");
         } else {
             insertComment(commentContent, attachedId);
             publishedInfo.setCommentNum(publishedInfo.getCommentNum() + 1);
@@ -68,7 +68,7 @@ public class CommentController {
     @PostMapping("/miniprogram/login/comment/delete/typeData")
     public String deleteCommentOfMixedData(@RequestParam String parentId) {
         if (commentService.getCommentById(parentId) == null) {
-            throw new RecordOfDataBaseNoFoundException("被评论的发布信息已被删除或者正在被审核");
+            throw new RecordOfDataBaseNoFoundException("被评论的发布信息已被删除或者正在被审核", parentId, "/miniprogram/login/comment/delete/typeData");
         } else {
             commentService.deleteCommentByParentId(parentId);
 
@@ -82,7 +82,7 @@ public class CommentController {
     @PostMapping("/miniprogram/login/comment/reply/insert")
     public String addRepliedComment(@RequestParam String commentContent, @RequestParam String parentId) {
         if (commentService.getCommentById(parentId) == null) {
-            throw new RecordOfDataBaseNoFoundException("id: " + parentId + ", 该回复评论的主体评论信息在数据库中不存在");
+            throw new RecordOfDataBaseNoFoundException("该回复评论的主体评论信息在数据库中不存在", parentId, "/miniprogram/login/comment/reply/insert");
         } else {
             String id = UuidUtil.acquireUuid();
             Comment comment = new Comment();
@@ -109,9 +109,7 @@ public class CommentController {
     }
 
     private String retrieveResultOfCommentList(PageInfo<Comment> pageInfo) {
-        pageInfo.getList().forEach(comment -> {
-            comment.setCreateTime(TimeStampUtil.timeStamp(comment.getGmtCreate()));
-        });
+        pageInfo.getList().forEach(comment -> comment.setCreateTime(TimeStampUtil.timeStamp(comment.getGmtCreate())));
         Result.MyPage<Comment> page = new Result.MyPage<>(pageInfo.getPageNum(), pageInfo.getPages(), pageInfo.getList());
         Result<Result.MyPage<Comment>> result = new Result<>(null, null, page, null);
         return JSON.toJSONString(result);
@@ -120,7 +118,7 @@ public class CommentController {
     @PostMapping("/miniprogram/login/comment/reply/delete")
     public String deleteCommentOfRepliedComment(@RequestParam String id) {
         if (commentService.getCommentById(id) == null) {
-            throw new RecordOfDataBaseNoFoundException("该回复评论已被删除");
+            throw new RecordOfDataBaseNoFoundException("该回复评论已被删除", id, "/miniprogram/login/comment/reply/delete");
         } else {
             commentService.deleteCommentById(id);
             Result<String> result = new Result<>();

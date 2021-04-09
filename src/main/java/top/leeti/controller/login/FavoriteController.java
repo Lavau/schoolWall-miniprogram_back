@@ -8,8 +8,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import top.leeti.entity.Favorite;
 import top.leeti.entity.FavoritedContent;
+import top.leeti.entity.PublishedInfo;
 import top.leeti.entity.User;
 import top.leeti.entity.result.Result;
+import top.leeti.exception.RecordOfDataBaseNoFoundException;
 import top.leeti.service.FavoriteService;
 import top.leeti.util.UuidUtil;
 
@@ -30,6 +32,15 @@ public class FavoriteController {
         Result<List<Favorite>> result = new Result<>();
         result.setSuccess(true);
         result.setData(favorites);
+        return JSON.toJSONString(result);
+    }
+
+    @GetMapping("/miniprogram/login/favoritedContent/list")
+    public String listFavoritedContents(@RequestParam String favoriteId) {
+        List<PublishedInfo> favoritedContents = favoriteService.listFavoritedContentsByFavoriteId(favoriteId);
+        Result<List<PublishedInfo>> result = new Result<>();
+        result.setSuccess(true);
+        result.setData(favoritedContents);
         return JSON.toJSONString(result);
     }
 
@@ -65,5 +76,32 @@ public class FavoriteController {
             result.setMsg("已收藏过了。。");
         }
         return JSON.toJSONString(result);
+    }
+
+    @PostMapping("/miniprogram/login/favorite/delete")
+    public String deleteFavorite(@RequestParam String id) {
+        Favorite favorite = favoriteService.getFavoriteById(id);
+        if (favorite == null) {
+            throw new RecordOfDataBaseNoFoundException("@_@: 这个收藏夹已经被删除了。。", id, "/miniprogram/login/favorite/delete");
+        } else {
+            favoriteService.deleteFavoriteById(id);
+            Result<String> result = new Result<>();
+            result.setSuccess(true);
+            result.setMsg("该收藏夹删除成功！");
+            return JSON.toJSONString(result);
+        }
+    }
+
+    @PostMapping("/miniprogram/login/favoritedContent/delete")
+    public String deleteFavoritedContent(@RequestParam String favoritedContentId) {
+        if (favoriteService.getFavoritedContentById(favoritedContentId) == null ) {
+            throw new RecordOfDataBaseNoFoundException("@_@: 这个收藏已经被删除了。。", favoritedContentId, "/miniprogram/login/favoritedContent/delete");
+        } else {
+            favoriteService.deleteFavoritedContentById(favoritedContentId);
+            Result<String> result = new Result<>();
+            result.setSuccess(true);
+            result.setMsg("该收藏删除成功！");
+            return JSON.toJSONString(result);
+        }
     }
 }

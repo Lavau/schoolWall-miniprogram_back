@@ -28,10 +28,10 @@ public interface CommentMapper {
             "#{comment.content}, #{comment.gmtCreate})")
     void insertComment(@Param("comment") Comment comment);
 
-    @Delete ("DELETE FROM _comment WHERE _parent_id = #{parentId}")
+    @Delete("DELETE FROM _comment WHERE _parent_id = #{parentId}")
     void deleteCommentByParentId(@Param("parentId") String parentId);
 
-    @Delete ("DELETE FROM _comment WHERE _id = #{id}")
+    @Delete("DELETE FROM _comment WHERE _id = #{id}")
     void deleteCommentById(@Param("id") String id);
 
     @Select("SELECT _id AS id, _promulgator_id AS promulgatorId, _attached_id As attachedId, _parent_id AS parentId, " +

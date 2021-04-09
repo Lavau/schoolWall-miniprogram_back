@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import top.leeti.entity.Favorite;
 import top.leeti.entity.FavoritedContent;
+import top.leeti.entity.User;
 import top.leeti.entity.result.Result;
 import top.leeti.service.FavoriteService;
 import top.leeti.util.UuidUtil;
@@ -34,23 +35,35 @@ public class FavoriteController {
 
     @GetMapping("/miniprogram/login/favorite/create")
     public String createFavorite(@RequestParam String name) {
-        Favorite favorite = new Favorite();
-        favorite.setName(name);
-        favoriteService.insertFavorite(favorite);
+        Favorite favorite = favoriteService.getFavoriteByNameAndCreatorId(name, User.obtainCurrentUser().getStuId());
         Result<String> result = new Result<>();
-        result.setSuccess(true);
-        result.setMsg("收藏夹创建成功！");
+        if (favorite == null) {
+            String creatorId = User.obtainCurrentUser().getStuId();
+            Favorite newFavorite = new Favorite(UuidUtil.acquireUuid(), creatorId, name, new Date());
+            favoriteService.insertFavorite(newFavorite);
+            result.setSuccess(true);
+            result.setMsg("收藏夹创建成功！");
+        } else {
+            result.setSuccess(false);
+            result.setMsg("收藏夹已存在了哟！");
+        }
         return JSON.toJSONString(result);
     }
 
     @PostMapping("/miniprogram/login/favorite/collect")
     public String createFavorite(@RequestParam String favoriteId, @RequestParam String publishedInfoId) {
-        FavoritedContent favoritedContent =
-                new FavoritedContent(UuidUtil.acquireUuid(), favoriteId, publishedInfoId, new Date());
-        favoriteService.insertFavoritedContent(favoritedContent);
+        FavoritedContent favoritedContent = favoriteService.getFavoritedContentByFavoriteIdAndPublishedInfoId(favoriteId, publishedInfoId);
         Result<String> result = new Result<>();
-        result.setSuccess(true);
-        result.setMsg("收藏成功！");
+        if (favoritedContent == null) {
+            FavoritedContent newFavoritedContent =
+                    new FavoritedContent(UuidUtil.acquireUuid(), favoriteId, publishedInfoId, new Date());
+            favoriteService.insertFavoritedContent(newFavoritedContent);
+            result.setSuccess(true);
+            result.setMsg("收藏成功！");
+        } else {
+            result.setSuccess(false);
+            result.setMsg("已收藏过了。。");
+        }
         return JSON.toJSONString(result);
     }
 }

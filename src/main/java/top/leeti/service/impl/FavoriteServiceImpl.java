@@ -29,10 +29,13 @@ public class FavoriteServiceImpl implements FavoriteService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
+    public List<FavoritedContent> listFavoritedContentsByFavoriteId(String favoriteId) {
+        return null;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
     public void insertFavorite(Favorite favorite) {
-        favorite.setId(UuidUtil.acquireUuid());
-        favorite.setGmtCreate(new Date());
-        favorite.setCreatorId(User.obtainCurrentUser().getStuId());
         favoriteMapper.insertFavorite(favorite);
     }
 
@@ -40,6 +43,30 @@ public class FavoriteServiceImpl implements FavoriteService {
     @Transactional(rollbackFor = Exception.class)
     public void insertFavoritedContent(FavoritedContent favoritedContent) {
         favoriteMapper.insertFavoritedContent(favoritedContent);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Favorite getFavoriteByNameAndCreatorId(String name, String creatorId) {
+        return favoriteMapper.getFavoriteByNameAndCreatorId(name, creatorId);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public FavoritedContent getFavoritedContentByFavoriteIdAndPublishedInfoId(String favoriteId, String publishedInfoId) {
+        return favoriteMapper.getFavoritedContentByFavoriteIdAndPublishedInfoId(favoriteId, publishedInfoId);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteFavoriteById(String id) {
+
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteFavoritedContentById(String id) {
+
     }
 
 }

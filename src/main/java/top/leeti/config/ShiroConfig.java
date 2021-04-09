@@ -36,8 +36,7 @@ public class ShiroConfig {
 
     @Bean
     public WeChatSessionManager sessionManager() {
-        WeChatSessionManager weChatSessionManager = new WeChatSessionManager();
-        return weChatSessionManager;
+        return new WeChatSessionManager();
     }
 
     @Bean

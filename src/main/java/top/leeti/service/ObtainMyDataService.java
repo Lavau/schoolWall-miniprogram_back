@@ -9,5 +9,5 @@ public interface ObtainMyDataService {
 
     PageInfo<PublishedInfo> obtainMyDataByTypeId(Integer typeId, Integer pageNum);
 
-    Map<String, String> obtainSomeInformationOfUser();
+    Map<String, Object> obtainSomeInformationOfUser();
 }

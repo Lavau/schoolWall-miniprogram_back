@@ -22,8 +22,8 @@ public class MyDataController {
 
     @GetMapping("/miniprogram/login/myData/info")
     public String obtainMyInfo() {
-        Map<String, String> infos = obtainMyDataService.obtainSomeInformationOfUser();
-        Result<Map<String, String>> result = new Result<>();
+        Map<String, Object> infos = obtainMyDataService.obtainSomeInformationOfUser();
+        Result<Map<String, Object>> result = new Result<>();
         result.setSuccess(true);
         result.setData(infos);
         return JSON.toJSONString(result);

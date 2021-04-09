@@ -6,10 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import top.leeti.dao.CommentMapper;
-import top.leeti.dao.LikeMapper;
-import top.leeti.dao.ObtainMyDataMapper;
-import top.leeti.dao.PublishedInfoMapper;
+import top.leeti.dao.*;
 import top.leeti.entity.PublishedInfo;
 import top.leeti.entity.User;
 import top.leeti.service.ObtainMyDataService;
@@ -39,6 +36,9 @@ public class ObtainMyDataServiceImpl implements ObtainMyDataService {
     @Resource
     private CommentMapper commentMapper;
 
+    @Resource
+    private MsgMapper msgMapper;
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public PageInfo<PublishedInfo> obtainMyDataByTypeId(Integer typeId, Integer pageNum) {
@@ -53,8 +53,8 @@ public class ObtainMyDataServiceImpl implements ObtainMyDataService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Map<String, String> obtainSomeInformationOfUser() {
-        Map<String, String> infos = new HashMap<>(5);
+    public Map<String, Object> obtainSomeInformationOfUser() {
+        Map<String, Object> infos = new HashMap<>(7);
         String promulgatorId = User.obtainCurrentUser().getStuId();
         User currentUser = User.obtainCurrentUser();
         infos.put("avatarUrl", currentUser.getAvatarUrl());
@@ -62,6 +62,7 @@ public class ObtainMyDataServiceImpl implements ObtainMyDataService {
         infos.put("publishedInfoTotalNum", publishedInfoMapper.getTotalNumOfPublishedInfoByPromulgatorId(promulgatorId).toString());
         infos.put("likeTotalNum", likeMapper.getLikeTotalNumByPromulgatorId(promulgatorId).toString());
         infos.put("commentTotalNum", commentMapper.getCommentTotalNumByPromulgatorId(promulgatorId).toString());
+        infos.put("unreadMsgNum", msgMapper.listUnreadMsgByReceiverId(promulgatorId).size());
         return infos;
     }
 }

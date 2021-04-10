@@ -6,10 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import top.leeti.dao.CommentMapper;
-import top.leeti.dao.FavoriteMapper;
-import top.leeti.dao.LikeMapper;
-import top.leeti.dao.PublishedInfoMapper;
+import top.leeti.dao.*;
 import top.leeti.entity.Comment;
 import top.leeti.entity.Like;
 import top.leeti.entity.PublishedInfo;
@@ -41,6 +38,9 @@ public class PublishedInfoServiceImpl implements PublishedInfoService {
 
     @Resource
     private FavoriteMapper favoriteMapper;
+
+    @Resource
+    private ReportMapper reportMapper;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -94,6 +94,8 @@ public class PublishedInfoServiceImpl implements PublishedInfoService {
         comments.forEach(comment -> commentMapper.deleteCommentByParentId(comment.getId()));
 
         favoriteMapper.deleteFavoritedContentByPublishedInfoId(id);
+
+        reportMapper.deleteReportByPublishedInfoId(id);
 
         publishedInfoMapper.deletePublishedInfo(id);
     }

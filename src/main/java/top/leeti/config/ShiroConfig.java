@@ -36,7 +36,9 @@ public class ShiroConfig {
 
     @Bean
     public WeChatSessionManager sessionManager() {
-        return new WeChatSessionManager();
+        WeChatSessionManager weChatSessionManager = new WeChatSessionManager();
+        weChatSessionManager.setGlobalSessionTimeout(60 * 60 * 24);
+        return weChatSessionManager;
     }
 
     @Bean

@@ -16,33 +16,33 @@ public class PublishedInfo implements Serializable {
     @NotBlank(message = "id为空")
     @NotEmpty(message = "id为空")
     @NotNull(message = "id为空")
-    protected String id;
-    protected Integer iId;
-    protected String promulgatorId;
+    private String id;
+    private Integer iId;
+    private String promulgatorId;
     @Max(9)
     @Min(1)
-    protected Integer typeId;
-    protected String description;
+    private Integer typeId;
+    private String description;
     @Min(value = 0, message = "图片数量不符合规范")
     @Max(value = 3, message = "图片数量不符合规范")
-    protected Integer pictureNum;
-    protected Integer likeNum;
-    protected Integer viewNum;
-    protected Integer commentNum;
-    protected Date gmtCreate;
-    protected Boolean Audit;
-    protected Boolean Available;
-    protected Boolean Anonymous;
-    protected String msg;
+    private Integer pictureNum;
+    private Integer likeNum;
+    private Integer viewNum;
+    private Integer commentNum;
+    private Date gmtCreate;
+    private Boolean Audit;
+    private Boolean Available;
+    private Boolean Anonymous;
+    private String msg;
     private Date gmtClaim;
     private String claimantId;
 
     /*
      * 在数据库中没有以下属性
      */
-    protected String createTime;
-    protected String typeName;
-    protected List<String> pictureUrlList;
+    private String createTime;
+    private String typeName;
+    private List<String> pictureUrlList;
 
     private String avatarUrl;
     private String nickname;

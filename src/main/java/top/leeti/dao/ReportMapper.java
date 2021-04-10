@@ -20,5 +20,5 @@ public interface ReportMapper {
     void insertReport(@Param("r") Report report);
 
     @Delete("DELETE FROM _report WHERE _published_info_id = #{publishedInfoId}")
-    void deleteReportByPublishedInfoId(@Param("") String publishedInfoId);
+    void deleteReportByPublishedInfoId(@Param("publishedInfoId") String publishedInfoId);
 }

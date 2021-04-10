@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import top.leeti.entity.result.Result;
-import top.leeti.exception.RecordOfDataBaseNoFoundException;
+import top.leeti.exception.RecordOfDisableOrDataBaseNoFoundException;
 
 @Slf4j
 @RestControllerAdvice
@@ -20,9 +20,8 @@ public class ControllerGlobalExceptionHandler {
         return JSON.toJSONString(result);
     }
 
-    @ExceptionHandler(RecordOfDataBaseNoFoundException.class)
-    public String dealWithRecordOfDataBaseNoFoundException(RecordOfDataBaseNoFoundException e) {
-        log.info("提示的信息:{}, id:{}, uriOrMethod:{}", e.getMessage(), e.getId(),e.getUriOrMethod());
+    @ExceptionHandler(RecordOfDisableOrDataBaseNoFoundException.class)
+    public String dealWithRecordOfDataBaseNoFoundException(RecordOfDisableOrDataBaseNoFoundException e) {
         Result<Boolean> result = new Result<>();
         result.setSuccess(false);
         result.setMsg(e.getMessage());

@@ -17,8 +17,11 @@ public interface FavoriteMapper {
             "fc._gmt_create AS gmtCreate, fc._id AS favoritedContentId FROM _favorited_content AS fc LEFT OUTER JOIN " +
             "_published_info AS pi ON pi._id = fc._published_info_id LEFT OUTER JOIN _type ON pi._type_id = _type._id " +
             "WHERE pi._is_audit = 1 AND pi._is_available = 1 AND fc._favorite_id = #{favoriteId} ORDER BY " +
-            "pi._gmt_create DESC")
+            "fc._gmt_create DESC")
     List<PublishedInfo> listFavoritedContentsByFavoriteId(@Param("favoriteId") String favoriteId);
+
+    @Select("SELECT _id AS id FROM _favorited_content WHERE _favorite_id = #{favoriteId} ")
+    List<String> listIdOfFavoritedContentsByFavoriteId(@Param("favoriteId") String favoriteId);
 
     @Insert("INSERT _favorite (_id, _creator_id, _name, _gmt_create) VALUES (#{f.id}, #{f.creatorId}, #{f.name}, " +
             "#{f.gmtCreate})")

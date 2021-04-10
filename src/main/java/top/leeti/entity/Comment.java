@@ -24,7 +24,5 @@ public class Comment implements Serializable {
     private String avatarUrl;
     private String nickname;
     private String createTime;
-    private Integer likeNum;
     private Integer commentNum;
-    private Boolean Like;
 }

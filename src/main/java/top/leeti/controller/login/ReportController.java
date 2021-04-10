@@ -6,10 +6,13 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
+import top.leeti.entity.PublishedInfo;
 import top.leeti.entity.Report;
 import top.leeti.entity.ReportType;
 import top.leeti.entity.User;
 import top.leeti.entity.result.Result;
+import top.leeti.exception.RecordOfDisableOrDataBaseNoFoundException;
+import top.leeti.service.PublishedInfoService;
 import top.leeti.service.ReportService;
 import top.leeti.util.UuidUtil;
 
@@ -25,6 +28,9 @@ public class ReportController {
     @Resource
     private ReportService reportService;
 
+    @Resource
+    private PublishedInfoService publishedInfoService;
+
     @GetMapping("/miniprogram/login/reportType/list")
     public String listReportTypes() {
         List<ReportType> reportTypes = reportService.listReportTypes();
@@ -35,23 +41,43 @@ public class ReportController {
     @PostMapping("/miniprogram/login/report")
     public String report(@Valid Report report, BindingResult validResult) {
         Result<String> result = new Result<>();
+
+        verifyParametersOfReport(report, validResult, result);
+        if (result.getSuccess() != null && !result.getSuccess()) {
+            return JSON.toJSONString(result);
+        }
+
+        PublishedInfo publishedInfo = publishedInfoService.getPublishedInfoById(report.getPublishedInfoId());
+        if (publishedInfo == null) {
+            throw new RecordOfDisableOrDataBaseNoFoundException("@=@：举报失败。。这条记录不存在或正在接受审核");
+        } else {
+            insertReport(report);
+
+            result.setSuccess(true);
+            result.setMsg("@^.^@：感谢您的举报！我们会尽快处理。。");
+        }
+        return JSON.toJSONString(result);
+    }
+
+    private void insertReport(Report report) {
+        report.setId(UuidUtil.acquireUuid());
+        report.setGmtCreate(new Date());
+        String reporterId = User.obtainCurrentUser().getStuId();
+        report.setReporterId(reporterId);
+
+        reportService.insertReport(report);
+    }
+
+    private void verifyParametersOfReport(Report report, BindingResult validResult, Result<String> result) {
         if (validResult.hasErrors()) {
             result.setSuccess(false);
             result.setMsg("参数错误");
-        } else {
-            if (report.getReportReason().length() == 0 && report.getReportTypeId() == null) {
-                result.setSuccess(false);
-                result.setMsg("参数错误");
-            } else {
-                report.setId(UuidUtil.acquireUuid());
-                report.setGmtCreate(new Date());
-                report.setReporterId(User.obtainCurrentUser().getStuId());
-                reportService.insertReport(report);
-                result.setSuccess(true);
-                result.setMsg("感谢您的举报！我们会尽快处理。。");
-            }
         }
-        return JSON.toJSONString(result);
+
+        if (report.getReportReason().length() == 0 && report.getReportTypeId() == null) {
+            result.setSuccess(false);
+            result.setMsg("参数错误");
+        }
     }
 
 }

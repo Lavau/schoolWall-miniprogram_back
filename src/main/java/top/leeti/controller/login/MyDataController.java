@@ -32,6 +32,7 @@ public class MyDataController {
     @GetMapping("/miniprogram/login/myData")
     public String obtainMyData(@RequestParam Integer typeId, @RequestParam Integer pageNum) {
         PageInfo<PublishedInfo> pageInfo = obtainMyDataService.obtainMyDataByTypeId(typeId, pageNum);
+
         Result.MyPage<PublishedInfo> page = new Result.MyPage<>(pageInfo.getPageNum(), pageInfo.getPages(), pageInfo.getList());
         Result<Result.MyPage<PublishedInfo>> result = new Result<>();
         result.setData(page);

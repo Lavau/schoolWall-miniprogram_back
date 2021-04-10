@@ -44,6 +44,7 @@ public class ReportServiceImpl implements ReportService {
 
         PublishedInfo publishedInfo = publishedInfoMapper.getPublishedInfoById(report.getPublishedInfoId());
         publishedInfo.setAvailable(false);
+        publishedInfo.setAudit(false);
         publishedInfoMapper.updatePublishedInfo(publishedInfo);
 
         Msg msg = new Msg();

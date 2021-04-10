@@ -24,14 +24,15 @@ public class FavoriteServiceImpl implements FavoriteService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public List<Favorite> listFavorites() {
-        return favoriteMapper.listFavoritesByCreatorId(User.obtainCurrentUser().getStuId());
+        final String creatorId = User.obtainCurrentUser().getStuId();
+        return favoriteMapper.listFavoritesByCreatorId(creatorId);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public List<PublishedInfo> listFavoritedContentsByFavoriteId(String favoriteId) {
         List<PublishedInfo> favoritedContents = favoriteMapper.listFavoritedContentsByFavoriteId(favoriteId);
-        favoritedContents.forEach(item -> item.setCreateTime("收藏: " + TimeStampUtil.timeStamp(item.getGmtCreate())));
+        favoritedContents.forEach(item -> item.setCreateTime("收藏时间: " + TimeStampUtil.timeStamp(item.getGmtCreate())));
         return favoritedContents;
     }
 
@@ -74,8 +75,8 @@ public class FavoriteServiceImpl implements FavoriteService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteFavoriteById(String id) {
-        List<PublishedInfo> favoritedContents = favoriteMapper.listFavoritedContentsByFavoriteId(id);
-        favoritedContents.forEach(item -> favoriteMapper.deleteFavoritedContentById(item.getFavoritedContentId()));
+        List<String> idOfFavoritedContents = favoriteMapper.listIdOfFavoritedContentsByFavoriteId(id);
+        idOfFavoritedContents.forEach(idOfFavoritedContent -> favoriteMapper.deleteFavoritedContentById(idOfFavoritedContent));
         favoriteMapper.deleteFavoriteById(id);
     }
 

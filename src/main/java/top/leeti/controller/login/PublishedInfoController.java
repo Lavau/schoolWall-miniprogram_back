@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import top.leeti.entity.PublishedInfo;
 import top.leeti.entity.User;
 import top.leeti.entity.result.Result;
+import top.leeti.exception.RecordOfDisableOrDataBaseNoFoundException;
 import top.leeti.service.PublishedInfoService;
 import top.leeti.util.FileUtil;
 
@@ -31,12 +32,14 @@ public class PublishedInfoController {
         Result<String> result = new Result<>();
         if (resultsOfVerification.hasErrors()) {
             String description = publishedInfo.getDescription();
-            if ((description == null || description.length() == 0) && publishedInfo.getPictureNum().equals(0)) {
+            if ((description == null || description.length() == 0)
+                    && Integer.valueOf(0).equals(publishedInfo.getPictureNum())) {
                 result.setSuccess(false);
                 result.setMsg("发布的数据有错误");
             }
         } else {
             publishedInfoService.insertPublishedInfo(publishedInfo);
+
             result.setSuccess(true);
             result.setMsg("您的内容发布成功，快去首页刷新看看吧QvQ!");
         }
@@ -46,6 +49,7 @@ public class PublishedInfoController {
     @GetMapping("/miniprogram/noLogin/publishedInfo/list")
     public String obtainIndexPageData(@RequestParam(defaultValue = "1") int pageNum) {
         PageInfo<PublishedInfo> pageInfo = publishedInfoService.listPublishedInfo(pageNum);
+
         Result.MyPage<PublishedInfo> page = new Result.MyPage<>(pageInfo.getPageNum(), pageInfo.getPages(), pageInfo.getList());
         Result<Result.MyPage<PublishedInfo>> result = new Result<>(null, null, page, null);
         return JSON.toJSONString(result);
@@ -54,51 +58,50 @@ public class PublishedInfoController {
     @PostMapping("/miniprogram/login/publishedInfo/detail")
     public String obtainDetailInfo(@RequestParam String id) {
         PublishedInfo publishedInfo  = publishedInfoService.getPublishedInfoById(id);
-        Result<PublishedInfo> result = new Result<>();
         if (publishedInfo == null) {
-            result.setSuccess(false);
-            result.setMsg("本条发布的信息无法查看。可能已被删除或者接受审核");
+            throw new RecordOfDisableOrDataBaseNoFoundException("本条发布的信息无法查看。可能已被删除或者接受审核");
         } else {
-            if (new Integer(0).equals(publishedInfo.getPictureNum())) {
+            Result<PublishedInfo> result = new Result<>();
+
+            if (Integer.valueOf(0).equals(publishedInfo.getPictureNum())) {
                 publishedInfo.setPictureUrlList(new ArrayList<>(0));
             } else {
                 publishedInfo.setPictureUrlList(FileUtil.obtainListOfPictureUrl(publishedInfo.getTypeId(), publishedInfo.getId()));
             }
+
             publishedInfo.setViewNum(publishedInfo.getViewNum() + 1);
             publishedInfoService.updatePublishedInfo(publishedInfo);
 
             result.setData(publishedInfo);
             result.setSuccess(true);
+            return JSON.toJSONString(result);
         }
-        return JSON.toJSONString(result);
+
     }
 
     @PostMapping("/miniprogram/login/publishedInfo/claim")
     public String claimThing(@RequestParam String id) {
         PublishedInfo publishedInfo  = publishedInfoService.getPublishedInfoById(id);
-        Result<String> result = new Result<>();
         if (publishedInfo == null) {
-            result.setSuccess(false);
-            result.setMsg("该物品已被认领");
+            throw new RecordOfDisableOrDataBaseNoFoundException("#-#：认领失败。。该物品可能已被认领或者已被删除或者正在接受审核");
         } else {
-            if (publishedInfo.getAvailable()) {
-                publishedInfo.setGmtClaim(new Date());
-                publishedInfo.setClaimantId(User.obtainCurrentUser().getStuId());
-                publishedInfo.setAvailable(false);
-                publishedInfoService.updatePublishedInfo(publishedInfo);
-                result.setSuccess(true);
-                result.setMsg("认领成功");
-            }
+            publishedInfo.setGmtClaim(new Date());
+            publishedInfo.setClaimantId(User.obtainCurrentUser().getStuId());
+            publishedInfo.setAvailable(false);
+            publishedInfoService.updatePublishedInfo(publishedInfo);
+
+            Result<String> result = new Result<>();
+            result.setSuccess(true);
+            result.setMsg("@H.H@：认领成功~~~");
+            return JSON.toJSONString(result);
         }
-        return JSON.toJSONString(result);
+
     }
 
     @PostMapping("/miniprogram/login/publishedInfo/delete")
     public String deleteTypeDataInfoToDatabase(@RequestParam String id) {
-        PublishedInfo publishedInfo  = publishedInfoService.getPublishedInfoById(id);
-        if (publishedInfo != null) {
-            publishedInfoService.deletePublishedInfo(id);
-        }
+        publishedInfoService.deletePublishedInfo(id);
+
         Result<PublishedInfo> result = new Result<>();
         result.setMsg("本条信息删除成功！");
         return JSON.toJSONString(result);

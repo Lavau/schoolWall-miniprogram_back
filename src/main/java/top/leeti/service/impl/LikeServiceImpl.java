@@ -7,7 +7,7 @@ import top.leeti.dao.PublishedInfoMapper;
 import top.leeti.entity.Like;
 import top.leeti.entity.PublishedInfo;
 import top.leeti.entity.User;
-import top.leeti.exception.RecordOfDataBaseNoFoundException;
+import top.leeti.exception.RecordOfDisableOrDataBaseNoFoundException;
 import top.leeti.service.LikeService;
 
 import javax.annotation.Resource;
@@ -24,17 +24,16 @@ public class LikeServiceImpl implements LikeService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void like(Boolean isLike, String id) throws RecordOfDataBaseNoFoundException {
+    public void like(Boolean isLike, String id) throws RecordOfDisableOrDataBaseNoFoundException {
         PublishedInfo publishedInfo = publishedInfoMapper.getPublishedInfoById(id);
-
         if (publishedInfo == null) {
-            throw new RecordOfDataBaseNoFoundException("无法点赞，被点赞的发布信息被删除或正在接受审核", id, "LikeServiceImpl.like()");
-        }
-
-        if (isLike) {
-            like(publishedInfo);
+            throw new RecordOfDisableOrDataBaseNoFoundException("@=@：点赞失败。。。这条记录不存在或者正在接受审核");
         } else {
-            cancelLike(publishedInfo);
+            if (isLike) {
+                like(publishedInfo);
+            } else {
+                cancelLike(publishedInfo);
+            }
         }
     }
 

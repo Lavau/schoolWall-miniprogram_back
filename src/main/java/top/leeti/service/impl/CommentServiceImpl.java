@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import top.leeti.dao.CommentMapper;
 import top.leeti.entity.Comment;
-import top.leeti.entity.PublishedInfo;
 import top.leeti.entity.User;
 import top.leeti.service.CommentService;
 import top.leeti.service.PublishedInfoService;

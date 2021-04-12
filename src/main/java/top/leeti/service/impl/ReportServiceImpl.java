@@ -50,23 +50,10 @@ public class ReportServiceImpl implements ReportService {
         Msg msg = new Msg();
         msg.setId(UuidUtil.acquireUuid());
         msg.setGmtCreate(new Date());
+        String msgContent = "您在 " + TimeStampUtil.timeStamp(publishedInfo.getGmtCreate()) + " 发布的内容被举报。举报原因："
+                + report.getReportReason() +  "。我们会对本条内容进行审核。审核期间，本条内容无法查看。";
         msg.setReceiverId(publishedInfo.getPromulgatorId());
-        msg.setContent(generateContent(report, publishedInfo));
+        msg.setContent(msgContent);
         msgMapper.insertMsg(msg);
-    }
-
-    private String generateContent(Report report, PublishedInfo publishedInfo) {
-        String content = "您在 " + TimeStampUtil.timeStamp(publishedInfo.getGmtCreate()) + " 发布的内容被举报。举报原因：";
-        if (report.getReportTypeId() != null) {
-            ReportType reportType = reportMapper.getReportTypeById(report.getReportTypeId());
-            content = content + reportType.getName();
-            if (report.getReportReason() != null && report.getReportReason().length() > 0) {
-                content = content + "、" + report.getReportReason();
-            }
-        } else {
-            content = content + report.getReportReason();
-        }
-        content = content + "。我们会对本条内容进行审核。审核期间，本条内容无法查看。";
-        return content;
     }
 }

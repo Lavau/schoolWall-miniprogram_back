@@ -26,6 +26,7 @@ public class MyRealm extends AuthorizingRealm {
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken)
             throws AuthenticationException {
         UsernamePasswordToken usernamePasswordToken = (UsernamePasswordToken) authenticationToken;
+        usernamePasswordToken.setRememberMe(true);
 
         User user = userService.getUserByOpenId(usernamePasswordToken.getUsername());
 

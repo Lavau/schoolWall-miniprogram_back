@@ -34,6 +34,7 @@ public class LoginController {
             Subject currentUser = SecurityUtils.getSubject();
             try{
                 currentUser.login(usernamePasswordToken);
+                currentUser.isRemembered();
                 result = new Result<>(null, null, "registered", true);
             } catch(AccountException accountException) {
                 result = new Result<>(null, null, "unregistered", false);

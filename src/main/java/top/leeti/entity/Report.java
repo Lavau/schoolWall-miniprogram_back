@@ -19,7 +19,9 @@ public class Report {
     @NotNull(message = "publishedInfoId为空")
     private String publishedInfoId;
     private String reporterId;
-    private Integer reportTypeId;
+    @NotBlank(message = "举报原因为空")
+    @NotEmpty(message = "举报原因为空")
+    @NotNull(message = "举报原因为空")
     private String reportReason;
     private Boolean Audit;
     private Date gmtCreate;

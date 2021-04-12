@@ -41,20 +41,19 @@ public class ReportController {
     @PostMapping("/miniprogram/login/report")
     public String report(@Valid Report report, BindingResult validResult) {
         Result<String> result = new Result<>();
-
-        verifyParametersOfReport(report, validResult, result);
-        if (result.getSuccess() != null && !result.getSuccess()) {
-            return JSON.toJSONString(result);
-        }
-
-        PublishedInfo publishedInfo = publishedInfoService.getPublishedInfoById(report.getPublishedInfoId());
-        if (publishedInfo == null) {
-            throw new RecordOfDisableOrDataBaseNoFoundException("@=@：举报失败。。这条记录不存在或正在接受审核");
+        if (validResult.hasErrors()) {
+            result.setSuccess(false);
+            result.setMsg("举报内容填写不规范");
         } else {
-            insertReport(report);
+            PublishedInfo publishedInfo = publishedInfoService.getPublishedInfoById(report.getPublishedInfoId());
+            if (publishedInfo == null) {
+                throw new RecordOfDisableOrDataBaseNoFoundException("@=@：举报失败。。这条记录不存在或正在接受审核");
+            } else {
+                insertReport(report);
 
-            result.setSuccess(true);
-            result.setMsg("@^.^@：感谢您的举报！我们会尽快处理。。");
+                result.setSuccess(true);
+                result.setMsg("@^.^@：感谢您的举报！我们会尽快处理。。");
+            }
         }
         return JSON.toJSONString(result);
     }
@@ -67,17 +66,4 @@ public class ReportController {
 
         reportService.insertReport(report);
     }
-
-    private void verifyParametersOfReport(Report report, BindingResult validResult, Result<String> result) {
-        if (validResult.hasErrors()) {
-            result.setSuccess(false);
-            result.setMsg("参数错误");
-        }
-
-        if (report.getReportReason().length() == 0 && report.getReportTypeId() == null) {
-            result.setSuccess(false);
-            result.setMsg("参数错误");
-        }
-    }
-
 }

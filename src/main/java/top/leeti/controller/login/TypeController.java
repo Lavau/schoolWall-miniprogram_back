@@ -18,7 +18,7 @@ public class TypeController {
     @Resource
     private TypeService typeService;
 
-    @GetMapping("/miniprogram/login/type/obtain")
+    @GetMapping(value = {"/miniprogram/login/type/obtain", "/miniprogram/noLogin/type/obtain"})
     public String obtainTypes() {
         List<Type> types = typeService.listTypes();
         Result<List<Type>> result = new Result<>();

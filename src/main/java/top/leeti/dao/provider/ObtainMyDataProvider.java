@@ -20,7 +20,7 @@ public class ObtainMyDataProvider {
                     WHERE().WHERE("pi._id IN (SELECT DISTINCT _id FROM _like WHERE _stu_id = '" + currentStuId + "')");
                 } else if (Integer.valueOf(3).equals(typeId)) {
                     WHERE().WHERE("pi._id IN (SELECT DISTINCT _attached_id FROM _comment " +
-                            "WHERE pi._promulgator_id = '" + currentStuId + "' AND _attached_id IS NOT NULL)");
+                            "WHERE _comment._promulgator_id = '" + currentStuId + "' AND _attached_id IS NOT NULL)");
                 }
                 WHERE().ORDER_BY("pi._gmt_create DESC");
             }

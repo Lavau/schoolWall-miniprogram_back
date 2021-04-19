@@ -36,6 +36,7 @@ public class PublishedInfo implements Serializable {
     private String msg;
     private Date gmtClaim;
     private String claimantId;
+    private String title;
 
     /*
      * 在数据库中没有以下属性

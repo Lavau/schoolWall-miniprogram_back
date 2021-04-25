@@ -56,7 +56,7 @@ public class ShiroConfig {
         shiroFilterFactoryBean.setSecurityManager(securityManager);
 
         // 设置默认登录的 url（若登录失败，则转到此）
-        shiroFilterFactoryBean.setLoginUrl("/app/noLogin/error");
+        shiroFilterFactoryBean.setLoginUrl("/miniprogram/noLogin/error");
         // 设置登录认证成功后默认转到的 url
 //        shiroFilterFactoryBean.setSuccessUrl("/admin/index");
         // 设置权限认证失败时转到的 url

@@ -23,20 +23,26 @@ public class RegisterController {
 
     @PostMapping("/miniprogram/noLogin/register")
     public String register(User user, @RequestParam String code) {
-        Map<String, String> map = WechatUtil.acquireSessionKeyAndOpenId(code);
-        String openId = map.get("openId");
-
         Result<String> result = new Result<>();
-        if (openId == null) {
+        User registerEdUser = userService.getUserByStuId(user.getStuId());
+        if (registerEdUser != null) {
             result.setSuccess(false);
-            result.setMsg("注册失败！原因为openId获取失败");
+            result.setMsg("注册失败！原因为当前学号已存在。。。");
         } else {
-            user.setOpenId(openId);
-            user.setGmtCreate(new Date());
-            userService.insertUser(user);
-            log.info("用户{}注册成功！", user.toString());
-            result.setSuccess(true);
-            result.setMsg("恭喜您，注册成功！请登录");
+            Map<String, String> map = WechatUtil.acquireSessionKeyAndOpenId(code);
+            String openId = map.get("openId");
+
+            if (openId == null) {
+                result.setSuccess(false);
+                result.setMsg("注册失败！原因为openId获取失败");
+            } else {
+                user.setOpenId(openId);
+                user.setGmtCreate(new Date());
+                userService.insertUser(user);
+                log.info("用户{}注册成功！", user.toString());
+                result.setSuccess(true);
+                result.setMsg("恭喜您，注册成功！请登录");
+            }
         }
         return JSON.toJSONString(result);
     }

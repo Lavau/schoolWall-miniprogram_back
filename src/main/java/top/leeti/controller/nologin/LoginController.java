@@ -6,10 +6,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import top.leeti.entity.result.Result;
 import top.leeti.util.WechatUtil;
 
@@ -42,6 +39,14 @@ public class LoginController {
             }
         }
 
+        return JSON.toJSONString(result);
+    }
+
+    @GetMapping("error")
+    public String error() {
+        Result<String> result = new Result<>();
+        result.setSuccess(false);
+        result.setMsg("小程序登录失败！！建议您点击右上角，选择重新进入小程序");
         return JSON.toJSONString(result);
     }
 }

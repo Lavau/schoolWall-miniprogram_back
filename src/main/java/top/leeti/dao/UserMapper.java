@@ -15,9 +15,8 @@ public interface UserMapper {
     boolean insertUser(@Param("user") User user);
 
     @Select("SELECT _open_id as openId, _stu_name as stuName, _stu_id as stuId, _college_id as collegeId, _avatar_url " +
-            "as avatarUrl, _nickname AS nickname, _gmt_create as gmtCreate from _user where _stu_id = #{stuId} " +
-            "AND _en_password = #{enPassword}")
-    User getUserByStuIdAndPassword(@Param("stuId") String stuId, @Param("enPassword") String enPassword);
+            "as avatarUrl, _nickname AS nickname, _gmt_create as gmtCreate from _user where _stu_id = #{stuId}")
+    User getUserByStuId(@Param("stuId") String stuId);
 
     @Select("SELECT _open_id as openId, _stu_name as stuName, _stu_id as stuId, _college_id as collegeId, _avatar_url " +
             "as avatarUrl, _nickname AS nickname, _gmt_create as gmtCreate from _user where _open_id = #{openId} ")

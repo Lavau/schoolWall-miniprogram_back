@@ -24,8 +24,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public User getUserByStuIdAndPassword(String stuId, String enPassword) {
-        return userMapper.getUserByStuIdAndPassword(stuId, enPassword);
+    public User getUserByStuId(String stuId) {
+        return userMapper.getUserByStuId(stuId);
     }
 
     @Override

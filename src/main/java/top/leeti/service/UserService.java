@@ -6,7 +6,7 @@ public interface UserService {
 
     boolean insertUser(User user);
 
-    User getUserByStuIdAndPassword(String stuId, String enPassword);
+    User getUserByStuId(String stuId);
 
     User getUserByOpenId(String openId);
 

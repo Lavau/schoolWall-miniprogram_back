@@ -14,6 +14,8 @@ import top.leeti.entity.result.Result;
 import top.leeti.exception.RecordOfDisableOrDataBaseNoFoundException;
 import top.leeti.service.PublishedInfoService;
 import top.leeti.util.FileUtil;
+import top.leeti.util.SenInfoCheckUtil;
+import top.leeti.util.WechatUtil;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
@@ -104,6 +106,16 @@ public class PublishedInfoController {
 
         Result<PublishedInfo> result = new Result<>();
         result.setMsg("本条信息删除成功！");
+        return JSON.toJSONString(result);
+    }
+
+    @PostMapping("/miniprogram/login/publishedInfo/description/verify")
+    public String verifyDescription(@RequestParam String description) {
+//        Integer verifyResult = WechatUtil.verifyDescription(description);
+        Boolean verifyResult = SenInfoCheckUtil.cotentFilter(description);
+
+        Result<Boolean> result = new Result<>();
+        result.setData(verifyResult);
         return JSON.toJSONString(result);
     }
 }

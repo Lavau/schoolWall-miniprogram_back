@@ -51,6 +51,8 @@ public class FileUtil {
         for(String pictureName : pictureNameList){
             pictureUrlList.add(new StringBuilder("http://47.98.217.61:8080/miniprogram/picture/obtain?typeId=").append(typeId).
                     append("&uuid=").append(uuid).append("&fileName=").append(pictureName).toString());
+//            pictureUrlList.add(new StringBuilder("http://127.0.0.1:8080/miniprogram/picture/obtain?typeId=").append(typeId).
+//                    append("&uuid=").append(uuid).append("&fileName=").append(pictureName).toString());
         }
         return pictureUrlList;
     }

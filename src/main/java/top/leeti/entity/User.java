@@ -22,15 +22,15 @@ public class User implements Serializable {
 
     private String openId;
 
-    @NotBlank(message = "学生名字为空")
-    @NotEmpty(message = "学生名字为空")
-    @NotNull(message = "学生名字为空")
-    private String stuName;
-
     @NotBlank(message = "学号为空")
     @NotEmpty(message = "学号为空")
     @NotNull(message = "学号为空")
     private String stuId;
+
+    @NotBlank(message = "学生名字为空")
+    @NotEmpty(message = "学生名字为空")
+    @NotNull(message = "学生名字为空")
+    private String stuName;
 
     @NotBlank(message = "学院号为空")
     @NotEmpty(message = "学院号为空")
@@ -48,12 +48,10 @@ public class User implements Serializable {
     private String nickname;
 
     private Date gmtCreate;
-    @NotBlank(message = "密码为空")
-    @NotEmpty(message = "密码为空")
-    @NotNull(message = "密码为空")
-    private String enPassword;
-    private Boolean Available;
 
-    private Integer likeTotalNum;
-    private Integer commentTotalNum;
+    private Date gmtModified;
+
+    private String enPassword;
+
+    private Boolean Available;
 }

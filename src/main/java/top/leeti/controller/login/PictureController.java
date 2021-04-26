@@ -6,9 +6,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import top.leeti.entity.User;
 import top.leeti.entity.result.Result;
 import top.leeti.exception.MkdirCreateException;
 import top.leeti.service.PublishedInfoService;
+import top.leeti.service.UserService;
 import top.leeti.util.FileUtil;
 import top.leeti.util.WechatUtil;
 
@@ -21,6 +23,9 @@ public class PictureController {
 
     @Resource
     private PublishedInfoService publishedInfoService;
+
+    @Resource
+    private UserService userService;
 
     @PostMapping("/miniprogram/login/picture/save")
     public String savePictures(@RequestParam Integer typeId,  @RequestParam String id,
@@ -38,10 +43,22 @@ public class PictureController {
 
             publishedInfoService.deletePublishedInfo(id);
         } else {
+            if (Integer.valueOf(0).equals(typeId)) {
+                result.setMsg("ヾ(≧▽≦*)o：头像修改成功。。。");
+                modifyAvatarUrl(originalFilename);
+            }
+
             result.setSuccess(true);
         }
 
         return JSON.toJSONString(result);
 
+    }
+
+    private void modifyAvatarUrl(String fileName) {
+        User user = User.obtainCurrentUser();
+        String avatarUrl = FileUtil.obtainAvatarUrl(user.getOpenId(), fileName);
+        user.setAvatarUrl(avatarUrl);
+        userService.updateUser(user);
     }
 }

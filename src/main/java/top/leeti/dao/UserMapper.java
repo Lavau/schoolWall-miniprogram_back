@@ -1,9 +1,6 @@
 package top.leeti.dao;
 
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 import top.leeti.entity.User;
 
 @Mapper
@@ -14,11 +11,17 @@ public interface UserMapper {
             "#{user.gmtCreate}, #{user.enPassword}, #{user.openId})")
     boolean insertUser(@Param("user") User user);
 
-    @Select("SELECT _open_id as openId, _stu_name as stuName, _stu_id as stuId, _college_id as collegeId, _avatar_url " +
-            "as avatarUrl, _nickname AS nickname, _gmt_create as gmtCreate from _user where _stu_id = #{stuId}")
+    @Select("SELECT _open_id AS openId, _stu_id AS stuId, _stu_name AS stuName, _college_id AS collegeId, _avatar_url " +
+            "AS avatarUrl, _nickname AS nickname, _gmt_create AS gmtCreate, _gmt_modified AS gmtModified, _en_password " +
+            "AS enPassword, _is_available AS Available from _user where _stu_id = #{stuId}")
     User getUserByStuId(@Param("stuId") String stuId);
 
-    @Select("SELECT _open_id as openId, _stu_name as stuName, _stu_id as stuId, _college_id as collegeId, _avatar_url " +
-            "as avatarUrl, _nickname AS nickname, _gmt_create as gmtCreate from _user where _open_id = #{openId} ")
+    @Select("SELECT _open_id AS openId, _stu_id AS stuId, _stu_name AS stuName, _college_id AS collegeId, _avatar_url " +
+            "AS avatarUrl, _nickname AS nickname, _gmt_create AS gmtCreate, _gmt_modified AS gmtModified, _en_password " +
+            "AS enPassword, _is_available AS Available from _user where _open_id = #{openId} ")
     User getUserByOpenId(@Param("openId") String openId);
+
+    @Update("UPDATE _user SET _nickname = #{u.nickname}, _avatar_url = #{u.avatarUrl}, " +
+            "_gmt_modified = #{u.gmtModified} WHERE _open_id = #{u.openId}")
+    void updateUser(@Param("u") User user);
 }

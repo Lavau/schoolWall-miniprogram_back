@@ -59,6 +59,7 @@ public class ObtainMyDataServiceImpl implements ObtainMyDataService {
         User currentUser = User.obtainCurrentUser();
         infos.put("avatarUrl", currentUser.getAvatarUrl());
         infos.put("nickname", currentUser.getNickname());
+        infos.put("id", currentUser.getOpenId());
         infos.put("publishedInfoTotalNum", publishedInfoMapper.getTotalNumOfPublishedInfoByPromulgatorId(promulgatorId).toString());
         infos.put("likeTotalNum", likeMapper.getLikeTotalNumByPromulgatorId(promulgatorId).toString());
         infos.put("commentTotalNum", commentMapper.getCommentTotalNumByPromulgatorId(promulgatorId).toString());

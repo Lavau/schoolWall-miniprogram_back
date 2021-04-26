@@ -33,4 +33,10 @@ public class UserServiceImpl implements UserService {
     public User getUserByOpenId(String openId) {
         return userMapper.getUserByOpenId(openId);
     }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updateUser(User user) {
+        userMapper.updateUser(user);
+    }
 }

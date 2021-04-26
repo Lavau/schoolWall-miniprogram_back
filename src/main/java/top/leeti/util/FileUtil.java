@@ -56,4 +56,12 @@ public class FileUtil {
         }
         return pictureUrlList;
     }
+
+    public static String obtainAvatarUrl(String openId, String fileName){
+        String avatarUrl = new StringBuilder("http://47.98.217.61:8080/miniprogram/picture/obtain?typeId=0").
+                append("&uuid=").append(openId).append("&fileName=").append(fileName).toString();
+//        String avatarUrl = new StringBuilder("http://127.0.0.1:8080/miniprogram/picture/obtain?typeId=0").
+//                append("&uuid=").append(openId).append("&fileName=").append(fileName).toString();
+        return avatarUrl;
+    }
 }

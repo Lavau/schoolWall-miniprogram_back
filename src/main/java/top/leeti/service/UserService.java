@@ -10,4 +10,6 @@ public interface UserService {
 
     User getUserByOpenId(String openId);
 
+    void updateUser(User user);
+
 }

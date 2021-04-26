@@ -15,7 +15,6 @@ import top.leeti.exception.RecordOfDisableOrDataBaseNoFoundException;
 import top.leeti.service.PublishedInfoService;
 import top.leeti.util.FileUtil;
 import top.leeti.util.SenInfoCheckUtil;
-import top.leeti.util.WechatUtil;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;

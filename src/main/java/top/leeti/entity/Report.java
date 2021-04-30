@@ -18,6 +18,9 @@ public class Report {
     @NotEmpty(message = "publishedInfoId为空")
     @NotNull(message = "publishedInfoId为空")
     private String publishedInfoId;
+
+    private String commentId;
+
     private String reporterId;
     @NotBlank(message = "举报原因为空")
     @NotEmpty(message = "举报原因为空")

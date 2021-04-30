@@ -14,6 +14,7 @@ public class ControllerGlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public String dealWithException(Exception e) {
         e.printStackTrace();
+        log.info("{}", e.toString());
         Result<Boolean> result = new Result<>();
         result.setSuccess(false);
         result.setMsg("服务器繁忙");

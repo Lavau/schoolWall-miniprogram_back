@@ -16,4 +16,6 @@ public interface CommentService {
     PageInfo<Comment> listCommentsOfRepliedComment(String parentId, int pageNum);
 
     void deleteCommentById(String id);
+
+    void updateComment(Comment comment);
 }

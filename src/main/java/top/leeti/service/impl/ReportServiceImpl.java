@@ -42,6 +42,12 @@ public class ReportServiceImpl implements ReportService {
     public void insertReport(Report report) {
         reportMapper.insertReport(report);
 
+        if (report.getPublishedInfoId() != null) {
+            reportPublishedInfo(report);
+        }
+    }
+
+    private void reportPublishedInfo(Report report) {
         PublishedInfo publishedInfo = publishedInfoMapper.getPublishedInfoById(report.getPublishedInfoId());
         publishedInfo.setAvailable(false);
         publishedInfo.setAudit(false);

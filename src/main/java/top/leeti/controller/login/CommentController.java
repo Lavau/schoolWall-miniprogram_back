@@ -3,16 +3,19 @@ package top.leeti.controller.login;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import top.leeti.entity.Comment;
 import top.leeti.entity.PublishedInfo;
+import top.leeti.entity.Report;
 import top.leeti.entity.User;
 import top.leeti.entity.result.Result;
 import top.leeti.exception.RecordOfDisableOrDataBaseNoFoundException;
 import top.leeti.service.CommentService;
 import top.leeti.service.PublishedInfoService;
+import top.leeti.service.ReportService;
 import top.leeti.util.TimeStampUtil;
 import top.leeti.util.UuidUtil;
 
@@ -26,6 +29,9 @@ public class CommentController {
 
     @Resource
     private CommentService commentService;
+
+    @Resource
+    private ReportService reportService;
 
     @Resource
     private PublishedInfoService publishedInfoService;
@@ -72,7 +78,7 @@ public class CommentController {
     public String deleteCommentOfMixedData(@RequestParam String parentId) {
         Comment comment = commentService.getCommentById(parentId);
         if (comment == null) {
-            throw new RecordOfDisableOrDataBaseNoFoundException("!! 这条评论已被删除 !!");
+            throw new RecordOfDisableOrDataBaseNoFoundException("!! 这条评论已被删除或接受审核 !!");
         } else {
             commentService.deleteCommentByParentId(parentId);
 
@@ -122,6 +128,11 @@ public class CommentController {
     @PostMapping("/miniprogram/login/comment/reply/list")
     public String listCommentsOfRepliedComment(@RequestParam int pageNum,
                                                @RequestParam String parentId) {
+        Comment comment = commentService.getCommentById(parentId);
+        if (comment == null) {
+            throw new RecordOfDisableOrDataBaseNoFoundException("暂无法查看");
+        }
+
         PageInfo<Comment> pageInfo = commentService.listCommentsOfRepliedComment(parentId, pageNum);
         return retrieveResultOfCommentList(pageInfo);
     }
@@ -129,7 +140,7 @@ public class CommentController {
     private String retrieveResultOfCommentList(PageInfo<Comment> pageInfo) {
         pageInfo.getList().forEach(comment -> comment.setCreateTime(TimeStampUtil.timeStamp(comment.getGmtCreate())));
         Result.MyPage<Comment> page = new Result.MyPage<>(pageInfo.getPageNum(), pageInfo.getPages(), pageInfo.getList());
-        Result<Result.MyPage<Comment>> result = new Result<>(null, null, page, null);
+        Result<Result.MyPage<Comment>> result = new Result<>(null, null, page, true);
         return JSON.toJSONString(result);
     }
 
@@ -146,5 +157,34 @@ public class CommentController {
             result.setMsg("@-@：本条回复评论删除成功！");
             return JSON.toJSONString(result);
         }
+    }
+
+    @PostMapping("/miniprogram/login/comment/report")
+    public String reportComment(@RequestParam String id, @RequestParam String reportReason) {
+        Comment comment = commentService.getCommentById(id);
+        if (comment == null) {
+            throw new RecordOfDisableOrDataBaseNoFoundException("举报评论失败。。。该评论已不能查看");
+        }
+
+        insertReport(id, reportReason);
+
+        comment.setAvailable(false);
+        comment.setAudit(false);
+        commentService.updateComment(comment);
+
+        Result<String> result = new Result<>();
+        result.setSuccess(true);
+        result.setMsg("(￣y▽￣)╭ ：本条评论举报成功！我们会很快处理。。");
+        return JSON.toJSONString(result);
+    }
+
+    private void insertReport(String id, String reportReason) {
+        Report report = new Report();
+        report.setId(UuidUtil.acquireUuid());
+        report.setCommentId(id);
+        report.setReporterId(User.obtainCurrentUser().getStuId());
+        report.setReportReason(reportReason);
+        report.setGmtCreate(new Date());
+        reportService.insertReport(report);
     }
 }

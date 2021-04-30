@@ -72,4 +72,10 @@ public class CommentServiceImpl implements CommentService {
     public void deleteCommentById(String id) {
         commentMapper.deleteCommentById(id);
     }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updateComment(Comment comment) {
+        commentMapper.updateComment(comment);
+    }
 }
